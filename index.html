@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title> IC3 </title>
+  <title> IC6 </title>
   <script src="resources/jsPsych/jspsych.js"></script>
   <script src="resources/jsPsych/plugins/jspsych-html-keyboard-response.js"></script>
   <script src="resources/jsPsych/plugins/jspsych-html-button-response.js"></script>
@@ -30,7 +30,7 @@
   var turkcode = (Math.floor(Math.random() * 69696969) * 919).toString();
 
   // set up counterbalancing + participant condition.
-  var num_random = Math.floor(Math.random() * 4) +1;
+  var num_random = Math.floor(Math.random() * 2) +1;
 
   // preload in images
 preload_images = [
@@ -39,49 +39,48 @@ preload_images = [
 'resources/images/GREY.png',
 'resources/images/shock.png',
 'resources/images/BLANK.png',
-'resources/images/BROKEN.png'
+'resources/images/BROKEN.png',
+'resources/images/pill.png',
+'resources/images/healthy.png',
 ];
 
 // turn images into html strings to shove into trials
- var stim_off = '<img src = resources/images/GREY.png height = 200 width = 200> </img>'
- var shock_display = '<img src = resources/images/shock.png height = 250 width = 250> </img>'
  var blank = '<img src = resources/images/BLANK.png height = 250 width = 250> </img>'
 
   // set up counterbalancing for red/blue as target cue and set up html strings
-  if (num_random % 2 === 0) {
-    var cb = 1
+  if (num_random == 1) {
+    var cb = 1;
     var stim_cue = '<img src = resources/images/BLUE.png height = 200 width = 200> </img>';
-    var stim_context = '<img src = resources/images/RED.png height = 200 width = 200> </img>';
-    var cue_colour = 'blue';
-    var con_colour = 'red';
-
-  } else {
+    var stim_off = '<img src = resources/images/GREY.png height = 200 width = 200> </img>';
+    var outcome_display = '<img src = resources/images/shock.png height = 250 width = 250> </img>';
+    var outcome_text = "<p> Mr X was shocked!</p>";
+    var nooutcome_text = '<p> Mr X was not shocked </p>';
+    // var cue_colour = 'blue';
+  } else if (num_random == 2) {
     var cb = 2
-    var stim_cue = '<img src = resources/images/RED.png height = 200 width = 200> </img>';
-    var stim_context = '<img src = resources/images/BLUE.png height = 200 width = 200> </img>';
-    var cue_colour = 'red';
-    var con_colour = 'blue';
+    var stim_cue = '<img src = resources/images/pill.png height = 200 width = 200> </img>';
+    var stim_off = 'Mr X did not take the medicine'
+    var outcome_display = '<img src = resources/images/healthy.png height = 250 width = 250> </img>' +
+    + '<p> Mr X administered Sosibotrol.</p>';
+    var outcome_text = "<p> The patient felt better! </p>";
+    var nooutcome_text ='<p> The patient did not feel better </p>';
   };
-// 
-// '<img src = ' + stim_context + '> </img>'
-// '<img src = ' + stim_off + '/>'
-// '<img src = ' + blank + '/>'
-// "<img src = " + shock_display + "/>"
 
 // Assign conditions: 
 
-  // 1 = No alternative
-  // 2 = hidden alternative
+  1 = light
+  2 = medicine
 
-  // if (num_random > 2) {
-  //   group = 1
-  // } else {
+  if (num_random == 1) {
+    group = 1
+    groupname = 'light'
+  } else if (num_random == 2) {
     group = 2
-  //   // stim_context = stim_broken
-  // };
+    groupname = 'medicine'
+    // stim_context = stim_broken
+  };
 
-  // console.log('group ' + group);
-  // console.log('target cue =' + cue_colour);
+  console.log('group ' + group);
 
   var demographics_age = {
     type: "survey-html-form",
@@ -125,7 +124,7 @@ preload_images = [
   // load stimuli (for A/B/C/D cells) into array to randomize
 
   // Set up A B C D trials
-  // group 3 will see 2 lights, group 1 and 2 will see only 1 light (2 has hidden second light)
+  // group 2 sees a medicine followed by healthy or no recovery, )
   var whitespace = '<p><font color = "white"> Press the spacebar to continue </font></p>' //white space line for formatting
 
   // 1 cue trials
@@ -151,23 +150,23 @@ preload_images = [
     trial_duration: 1250,
   };
 
-  var shock_cueon_delay = {
+  var outcome_cueon_delay = {
     type: "html-keyboard-response",
     stimulus: stim_cue +
       '<p></p>' +
-      shock_display +
-      "<p> Mr X was shocked! </p>" +
+      outcome_display +
+      outcome_text +
       whitespace,
     response_ends_trial: false,
     trial_duration: 1250,
   };
 
-  var shock_cueon_prompt = {
+  var outcome_cueon_prompt = {
     type: "html-keyboard-response",
     stimulus: stim_cue +
       '<p></p>' +
-      shock_display +
-      "<p> Mr X was shocked! </p>" +
+      outcome_display +
+      outcome_text +
       "<p> Press the spacebar to continue </p>",
     choices: [32],
     post_trial_gap: 300,
@@ -178,22 +177,22 @@ preload_images = [
     }
   };
 
-  var noshock_cueon_delay = {
+  var nooutcome_cueon_delay = {
     type: "html-keyboard-response",
     stimulus: stim_cue +
       '<p></p>' +
-      '<p> Mr X was not shocked </p>' +
+      nooutcome_text +
       blank +
       whitespace,
     response_ends_trial: false,
     trial_duration: 1250
   }
 
-  var noshock_cueon_prompt = {
+  var nooutcome_cueon_prompt = {
     type: "html-keyboard-response",
     stimulus: stim_cue +
       '<p></p>' +
-      '<p> Mr X was not shocked </p>' +
+      nooutcome_text +
       blank +
       '<p> Press the spacebar to continue </p>',
     choices: [32],
@@ -205,23 +204,23 @@ preload_images = [
     }
   };
 
-  var shock_cueoff_delay = {
+  var outcome_cueoff_delay = {
     type: "html-keyboard-response",
     stimulus: stim_off +
       '<p></p>' +
-      shock_display +
-      "<p> Mr X was shocked! </p>" +
+      outcome_display +
+      outcome_text +
       whitespace,
     response_ends_trial: false,
     trial_duration: 1250
   };
 
-  var shock_cueoff_prompt = {
+  var outcome_cueoff_prompt = {
     type: "html-keyboard-response",
     stimulus: stim_off +
       '<p></p>' +
-      shock_display +
-      "<p> Mr X was shocked! </p>" +
+      outcome_display +
+      outcome_text +
       "<p> Press the spacebar to continue </p>",
     choices: [32],
     post_trial_gap: 300,
@@ -232,22 +231,22 @@ preload_images = [
     }
   };
 
-  var noshock_cueoff_delay = {
+  var nooutcome_cueoff_delay = {
     type: "html-keyboard-response",
     stimulus: stim_off +
       '<p></p>' +
-      '<p> Mr X was not shocked </p>' +
+      nooutcome_text +
       blank +
       whitespace,
     response_ends_trial: false,
     trial_duration: 1250
   }
 
-  var noshock_cueoff_prompt = {
+  var nooutcome_cueoff_prompt = {
     type: "html-keyboard-response",
     stimulus: stim_off +
       '<p></p>' +
-      '<p> Mr X was not shocked </p>' +
+      nooutcome_text +
       blank +
       '<p> Press the spacebar to continue </p>',
     choices: [32],
@@ -265,8 +264,8 @@ preload_images = [
     var training_trialA = {
       timeline: [
         cueon_display,
-        shock_cueon_delay,
-        shock_cueon_prompt
+        outcome_cueon_delay,
+        outcome_cueon_prompt
       ],
       data: {
         phase: 'training',
@@ -277,8 +276,8 @@ preload_images = [
     var training_trialB = {
       timeline: [
         cueon_display,
-        noshock_cueon_delay,
-        noshock_cueon_prompt
+        nooutcome_cueon_delay,
+        nooutcome_cueon_prompt
       ],
       data: {
         phase: 'training',
@@ -289,8 +288,8 @@ preload_images = [
     var training_trialC = {
       timeline: [
         cueoff_display,
-        shock_cueoff_delay,
-        shock_cueoff_prompt
+        outcome_cueoff_delay,
+        outcome_cueoff_prompt
       ],
       data: {
         phase: 'training',
@@ -301,8 +300,8 @@ preload_images = [
     var training_trialD = {
       timeline: [
         cueoff_display,
-        noshock_cueoff_delay,
-        noshock_cueoff_prompt
+        nooutcome_cueoff_delay,
+        nooutcome_cueoff_prompt
       ],
       data: {
         phase: 'training',
@@ -386,7 +385,8 @@ preload_images = [
   };
 
   // Set up test trials:
-  var test_causalratings_cue = {
+  if (group == 1) {
+    var test_causalratings_cue = {
     type: "html-slider-response",
     stimulus: stim_cue,
     labels: [
@@ -407,105 +407,7 @@ preload_images = [
     },
   };
 
-  var test_causalratings_context = {
-    type: "html-slider-response",
-    stimulus: stim_context,
-    labels: [
-      "<p> Definitely prevents shock </p>",
-      "<p> Has no effect on shock </p>",
-      "<p> Definitely causes shock <p>"
-    ],
-    button_label: "Continue",
-    require_movement: true,
-    prompt: "<p> To what extent does this light cause or prevent shock? </p>",
-    post_trial_gap: 250,
-    min: -100,
-    max: 100,
-    start: 0,
-    data: {
-      trialtype: "cr_con",
-      trialcategory: "cr"
-    },
-  };
-
-  if (group == 2) {
-    var test_frequency_cueon = {
-      type: "html-slider-response",
-      stimulus: stim_cue,
-      labels: [
-        "<p> Shocked 0 times </p>",
-        "<p> Shocked 50 times </p>",
-        "<p> Shocked 100 times <p>"
-      ],
-      button_label: "Continue",
-      require_movement: true,
-      prompt: "<p> Imagine Mr X observed the shock machine 100 times and only saw the <b>front</b> light on.</p>" +
-        "<p> How many times out of 100 do you predict Mr X will be shocked? </p>",
-      post_trial_gap: 250,
-      data: {
-        trialtype: "fr_cue",
-        trialcategory: "fr"
-      },
-    };
-
-    var test_frequency_cueoff = {
-      type: "html-slider-response",
-      stimulus: stim_off,
-      labels: [
-        "<p> Shocked 0 times </p>",
-        "<p> Shocked 50 times </p>",
-        "<p> Shocked 100 times <p>"
-      ],
-      button_label: "Continue",
-      require_movement: true,
-      prompt: "<p> Imagine Mr X observed the shock machine 100 times and only saw the <b>front</b> light off.</p>" +
-        "<p> How many times out of 100 do you predict Mr X will be shocked? </p>",
-      post_trial_gap: 250,
-      data: {
-        trialtype: "fr_off",
-        trialcategory: "fr"
-      },
-    };
-
-    var test_frequency_conon = {
-      type: "html-slider-response",
-      stimulus: stim_context,
-      labels: [
-        "<p> Shocked 0 times </p>",
-        "<p> Shocked 50 times </p>",
-        "<p> Shocked 100 times <p>"
-      ],
-      button_label: "Continue",
-      require_movement: true,
-      prompt: "<p> Imagine Mr X observed the shock machine 100 times and only saw the <b>rear</b> light on.</p>" +
-        "<p> How many times out of 100 do you predict Mr X will be shocked? </p>",
-      post_trial_gap: 250,
-      data: {
-        trialtype: "fr_conon",
-        trialcategory: "fr"
-      },
-    };
-
-    var test_frequency_conoff = {
-      type: "html-slider-response",
-      stimulus: stim_off,
-      labels: [
-        "<p> Shocked 0 times </p>",
-        "<p> Shocked 50 times </p>",
-        "<p> Shocked 100 times <p>"
-      ],
-      button_label: "Continue",
-      require_movement: true,
-      prompt: "<p> Imagine Mr X observed the shock machine 100 times and only saw the <b>rear</b> light off.</p>" +
-        "<p> How many times out of 100 do you predict Mr X will be shocked? </p>",
-      post_trial_gap: 250,
-      data: {
-        trialtype: "fr_conoff",
-        trialcategory: "fr"
-      },
-    };
-  } else {
-    var test_frequency_cueon = {
+  var test_frequency_cueon = {
       type: "html-slider-response",
       stimulus: stim_cue,
       labels: [
@@ -542,119 +444,6 @@ preload_images = [
         trialcategory: "fr"
       },
     };
-  }
-
-  // var test_frequency_cueon_contexton = {
-  //   type: "html-slider-response",
-  //   stimulus: '<img src = ' + stim_cue + '/><img src = ' + stim_context + '/>',
-  //   labels: [
-  //     "<p> Shocked 0 times </p>",
-  //     "<p> Shocked 50 times </p>",
-  //     "<p> Shocked 100 times <p>"
-  //   ],
-  //   button_label: "Continue",
-  //   require_movement: true,
-  //   prompt: "<p> Imagine Mr X observed the shock machine 100 times and only saw these lights.</p>" +
-  //     "<p> How many times out of 100 do you predict Mr X will be shocked? </p>",
-  //   post_trial_gap: 250,
-  //   data: {
-  //     trialtype: "fr_cueon",
-  //     trialcategory: "fr"
-  //   },
-  // };
-
-  // var test_frequency_cueoff_contexton = {
-  //   type: "html-slider-response",
-  //   stimulus: '<img src = ' + stim_off + '/><img src = ' + stim_context + '/>',
-  //   labels: [
-  //     "<p> Shocked 0 times </p>",
-  //     "<p> Shocked 50 times </p>",
-  //     "<p> Shocked 100 times <p>"
-  //   ],
-  //   button_label: "Continue",
-  //   require_movement: true,
-  //   prompt: "<p> Imagine Mr X observed the shock machine 100 times and only saw this light.</p>" +
-  //     "<p> How many times out of 100 do you predict Mr X will be shocked? </p>",
-  //   post_trial_gap: 250,
-  //   data: {
-  //     trialtype: "fr_cueoff",
-  //     trialcategory: "fr"
-  //   },
-  // };
-  // var test_frequency_cueon_contextoff = {
-  //   type: "html-slider-response",
-  //   stimulus: '<img src = ' + stim_cue + '/><img src = ' + stim_off + '/>',
-  //   labels: [
-  //     "<p> Shocked 0 times </p>",
-  //     "<p> Shocked 50 times </p>",
-  //     "<p> Shocked 100 times <p>"
-  //   ],
-  //   button_label: "Continue",
-  //   require_movement: true,
-  //   prompt: "<p> Imagine Mr X observed the shock machine 100 times and only saw this light.</p>" +
-  //     "<p> How many times out of 100 do you predict Mr X will be shocked? </p>",
-  //   post_trial_gap: 250,
-  //   data: {
-  //     trialtype: "fr_cueon_conoff",
-  //     trialcategory: "fr"
-  //   },
-  // };
-
-  // var test_frequency_cueoff_contextoff = {
-  //   type: "html-slider-response",
-  //   stimulus: '<img src = ' + stim_off + '/><img src = ' + stim_off + '/>',
-  //   labels: [
-  //     "<p> Shocked 0 times </p>",
-  //     "<p> Shocked 50 times </p>",
-  //     "<p> Shocked 100 times <p>"
-  //   ],
-  //   button_label: "Continue",
-  //   require_movement: true,
-  //   prompt: "<p> Imagine Mr X observed the shock machine 100 times and the lights were always off.</p>" +
-  //     "<p> How many times out of 100 do you predict Mr X will be shocked? </p>",
-  //   post_trial_gap: 250,
-  //   data: {
-  //     trialtype: "fr_cueoff_conoff",
-  //     trialcategory: "fr"
-  //   },
-  // };
-
-  var test_inference_conon = {
-      type: "html-slider-response",
-      stimulus: stim_context,
-      labels: [
-        "<p> None of the trials</p>",
-        "<p> Half of the trials</p>",
-        "<p> All of the trials<p>"
-      ],
-      button_label: "Continue",
-      require_movement: true,
-      prompt: "<p>In this experiment you only saw trials with the <b>front</b> light but did not see the <b>rear</b> light.</p>" +
-        "<p>Regardless of whether the front light was on or off, how many of the trials did you think the <b>rear</b> light was on?</p>",
-      post_trial_gap: 250,
-      data: {
-        trialtype: "in_conon",
-        trialcategory: "in"
-      },
-    };
-
-    failedmcheck = false
-
-    var test_mcheck_lightoff = {
-    type: "survey-multi-choice",
-    questions: [
-    { prompt: 'When observing the lights with Mr X during the task, were you looking at the front or rear of the shock machine?', 
-      options: ['Front','Rear','Both'],
-      name: "mcheck", required: true},
-    ],
-    on_finish: function (data) {
-      if (data.responses == '{"mcheck":"Front"}') {
-        failedmcheck = false;
-      } else {
-        failedmcheck = true
-      }
-    },
-  };
 
   var test_openend_causalrelationship = {
     type: "survey-text",
@@ -687,7 +476,7 @@ preload_images = [
       type: "survey-text",
       questions: [
         {
-          prompt: "On some trials, Mr X observed that the light was off but a shock still occurred.</p>" +
+          prompt: "<p> On some trials, Mr X observed that the light was off but a shock still occurred.</p>" +
             "<p>What did you think caused the shock?.</p>", rows: 10, columns: 80
         },
       ],
@@ -697,100 +486,120 @@ preload_images = [
         trialcategory: "oe",
       }
     };
-
-  //  else if (group == 3) {
-  //   if (cue_colour == 'blue') {
-  //     var test_openend_cueofftrials = {
-  //       type: "survey-text",
-  //       questions: [
-  //         { prompt: "<p>On some trials, Mr X observed that the BLUE light was off but a shock still occurred.</p>" +
-  //         "<p>What did you think caused the shock?.</p>", rows: 10, columns: 80 },
-  //       ],
-  //       post_trial_gap: 250,
-  //       data: {
-  //         trialtype: "oe_ac",
-  //         trialcategory: "oe",
-  //         phase: "test"
-  //       }
-  //     };
-  //   } else if (cue_colour == 'red') {
-  //     var test_openend_cueofftrials = {
-  //       type: "survey-text",
-  //       questions: [
-  //         { prompt: "<p>On some trials, Mr X observed that the RED light was off but a shock still occurred.</p>" +
-  //         "<p>What did you think caused the shock?.</p>", rows: 10, columns: 80 },
-  //       ],
-  //       post_trial_gap: 250,
-  //       data: {
-  //         trialtype: "oe_ac",
-  //         trialcategory: "oe",
-  //         phase: "test"
-  //       }
-  //     };
-  //   }
-  // };
-
-  // loop if open ended question not answered properly (minimum string length = 2 for "no")
-  // var test_openend_othercauses_loop = {
-  //   timeline: [test_openend_othercauses],
-  //   loop_function: function(data) {
-  //     if(JSON.parse(data.responses.Q0).length < 2) {
-  //       return false;
-  //     } else {
-  //       return true;
-  //     }
-  //   }
-  // };
-
-
-  if (group == 1) {
-    var test_causalratings_block = {
-      timeline: jsPsych.randomization.shuffle([
-        test_causalratings_cue,
-      ]),
-    };
-
-    var test_frequency_block = {
-      timeline: jsPsych.randomization.shuffle([
-        test_frequency_cueon,
-        test_frequency_cueoff,
-      ]),
-    };
   } else if (group == 2) {
+    var test_causalratings_cue = {
+    type: "html-slider-response",
+    stimulus: stim_cue,
+    labels: [
+      "<p> Definitely prevents recovery </p>",
+      "<p> Has no effect on recovery </p>",
+      "<p> Definitely causes recovery <p>"
+    ],
+    button_label: "Continue",
+    require_movement: true,
+    prompt: "<p> To what extent does administering Sosibotrol to patients with Linda syndrome cause or prevent recovery? </p>",
+    post_trial_gap: 250,
+    min: -100,
+    max: 100,
+    start: 0,
+    data: {
+      trialtype: "cr_cue",
+      trialcategory: "cr"
+    },
+  };
+
+  var test_frequency_cueon = {
+      type: "html-slider-response",
+      stimulus: stim_cue,
+      labels: [
+        "<p> Shocked 0 times </p>",
+        "<p> Shocked 50 times </p>",
+        "<p> Shocked 100 times <p>"
+      ],
+      button_label: "Continue",
+      require_movement: true,
+      prompt: "<p> Imagine Mr X observed 100 patients who were administered Sosibotrol for Linda syndrome.</p>" +
+        "<p> How many patients out of the 100 do you predict will recover? </p>",
+      post_trial_gap: 250,
+      data: {
+        trialtype: "fr_cue",
+        trialcategory: "fr"
+      },
+    };
+
+    var test_frequency_cueoff = {
+      type: "html-slider-response",
+      stimulus: stim_off,
+      labels: [
+        "<p> Shocked 0 times </p>",
+        "<p> Shocked 50 times </p>",
+        "<p> Shocked 100 times <p>"
+      ],
+      button_label: "Continue",
+      require_movement: true,
+      prompt: "<p> Imagine Mr X observed 100 patients who took no treatment for Linda syndrome.</p>" +
+        "<p> How many patients out of the 100 do you predict will recover? </p>",
+      post_trial_gap: 250,
+      data: {
+        trialtype: "fr_off",
+        trialcategory: "fr"
+      },
+    };
+    var test_openend_causalrelationship = {
+    type: "survey-text",
+    questions: [
+      { prompt: "In a few sentences, how did you determine whether there was a causal relationship or not between taking Sosibotrol and recovering from Linda syndrome?", rows: 10, columns: 80 },
+    ],
+    post_trial_gap: 250,
+    data: {
+      trialtype: "oe_cr",
+      trialcategory: "oe",
+    }
+  };
+
+  var test_openend_othercauses = {
+    type: "survey-text",
+    questions: [
+      {
+        prompt: "<p>In this experiment, did you consider any causes of recovery from Linda syndrome other than Sosibotrol? If so, please describe them. </p>" +
+          "<p>If you did not consider any other causes of recovery, please type 'no' and click 'Continue'.</p>", rows: 10, columns: 80
+      },
+    ],
+    post_trial_gap: 250,
+    data: {
+      trialtype: "oe_oc",
+      trialcategory: "oe",
+    }
+  };
+
+    var test_openend_cueofftrials = {
+      type: "survey-text",
+      questions: [
+        {
+          prompt: "<p> On some trials, Mr X observed that patients did not take Sosibotrol but still recovered from Linda syndrome.</p>" +
+            "<p>What did you think caused recovery?.</p>", rows: 10, columns: 80
+        },
+      ],
+      post_trial_gap: 250,
+      data: {
+        trialtype: "oe_ac",
+        trialcategory: "oe",
+      }
+    };
+  }
+
     var test_causalratings_block = {
       timeline: jsPsych.randomization.shuffle([
         test_causalratings_cue,
-        test_causalratings_context,
       ]),
     };
 
     var test_frequency_block = {
-      timeline: [
-        // no shuffle because questions get really confusing (same stimuli for off light, but text different)
+      timeline: jsPsych.randomization.shuffle([
         test_frequency_cueon,
         test_frequency_cueoff,
-        test_frequency_conon,
-        test_frequency_conoff,
-        test_inference_conon,
-      ],
+      ]),
     };
-  // } else if (group == 3) {
-  //   var test_causalratings_block = {
-  //     timeline: jsPsych.randomization.shuffle([
-  //       test_causalratings_cue,
-  //       test_causalratings_context,
-  //     ]),
-  //   };
-
-    // var test_frequency_block = {
-    //   timeline: jsPsych.randomization.shuffle([
-    //     test_frequency_cueon_contexton,
-    //     test_frequency_cueoff_contexton,
-    //     test_frequency_cueon_contextoff,
-    //     test_frequency_cueoff_contextoff,
-    //   ]),
-    // };
-  };
 
 var timeline_test_trials_pretest = {
   timeline: [
@@ -805,6 +614,7 @@ var timeline_test_trials_pretest = {
 var timeline_test_trials_interim1 = {
   timeline: [
     test_causalratings_block,
+    test_frequency_block
   ],
   data: {
     phase: 'test',
@@ -815,6 +625,7 @@ var timeline_test_trials_interim1 = {
 var timeline_test_trials_interim2 = {
   timeline: [
     test_causalratings_block,
+    test_frequency_block
   ],
   data: {
     phase: 'test',
@@ -825,6 +636,7 @@ var timeline_test_trials_interim2 = {
 var timeline_test_trials_interim3 = {
   timeline: [
     test_causalratings_block,
+    test_frequency_block,
   ],
   data: {
     phase: 'test',
@@ -845,10 +657,6 @@ var timeline_test_trials_final = {
     testphase: '4'
   },
 };
-
-if (group == 2) {
-    timeline_test_trials_final.timeline.push(test_mcheck_lightoff)
-      };
 
   // welcome
   if (sample == "mturk") {
@@ -1012,11 +820,9 @@ if (group == 2) {
     var training_instructions_stimon_delay = {
       type: "html-keyboard-response",
       stimulus: stim_cue +
-        "<p> In this experiment, Mr X discovers a strange machine that delivers electric shocks.</p>" +
-        "<p> Mr X also notices a coloured light on the machine's front interface.</p>" +
-        "<p> The coloured circle above indicates the <b>front</b> light is <b>ON</b>.</p>" +
-        whitespace +
-        whitespace,
+      "<p> In this experiment, Mr X is investigating a new experimental drug called Sosibotrol.</p>" +
+      "<p> Sosibotrol has been developed to treat a novel disease called Linda syndrome.</p>" +
+      whitespace,
       response_ends_trial: false,
       trial_duration: 5000
     };
@@ -1024,135 +830,38 @@ if (group == 2) {
     var training_instructions_stimon_prompt = {
       type: "html-keyboard-response",
       stimulus: stim_cue +
-        "<p> In this experiment, Mr X discovers a strange machine that delivers electric shocks.</p>" +
-        "<p> Mr X also notices a coloured light on the machine's front interface.</p>" +
-        "<p> The coloured circle above indicates the <b>front</b> light is <b>ON</b>.</p>" +
-        whitespace +
-        '<p> Press spacebar to continue </p>',
-      choices: [32],
-      post_trial_gap: 250,
-    };
-
-    var training_instructions_stimrear_delay = {
-      type: "html-keyboard-response",
-      stimulus: stim_context +
-        "<p> Mr X also notices that there is another coloured light on the <b>rear</b> of the machine.</p>" +
-        "<p> The coloured circle above indicates the <b>rear</b> light is <b>ON</b>.</p>" +
-        whitespace +
-        whitespace +
-        whitespace,
-      response_ends_trial: false,
-      trial_duration: 5000
-    };
-
-    var training_instructions_stimrear_prompt = {
-      type: "html-keyboard-response",
-      stimulus: stim_context +
-        "<p> Mr X also notices that there is another coloured light on the <b>rear</b> of the machine.</p>" +
-        "<p> The coloured circle above indicates the <b>rear</b> light is <b>ON</b>.</p>" +
-        whitespace +
-        whitespace +
-        '<p> Press spacebar to continue </p>',
+      "<p> In this experiment, Mr X is investigating a new experimental drug called Sosibotrol.</p>" +
+      "<p> Sosibotrol has been developed to treat a novel disease called Linda syndrome.</p>" +
+      '<p> Press spacebar to continue </p>',
       choices: [32],
       post_trial_gap: 250,
     };
 
     var training_instructions_stimoff_delay = {
       type: "html-keyboard-response",
-      stimulus: stim_off +
-        "<p> Both the <b>front</b> and <b>rear</b> lights also periodically turn on and off.</p>" +
-        "<p>The grey circle above shows what either light looks like when they are <b>OFF</b> </p>" +
-        whitespace +
+      stimulus: 
+        "<p> Your task is to help Mr X with determining the efficacy of Sosibotrol in treating Linda syndrome.</p>" +
+        "<p> In a moment you will observe patients attending Mr X's drug trial. Each screen will indicate one occasion in which Mr X either administered Sosibotrol or no treatment, and whether a patient recovered or not from Linda syndrome.</p>" +
+        "<p> Please use these observations to help Mr X determine whether there is any relationship between Sosibotrol and recovery from Linda syndrome. </p>" +
+        "<p> This task should take no more than 10 minutes. </p>" +
         whitespace +
         whitespace,
       response_ends_trial: false,
-      trial_duration: 5000
+      trial_duration: 12000,
     };
 
     var training_instructions_stimoff_prompt = {
       type: "html-keyboard-response",
-      stimulus: stim_off +
-        "<p> Both the <b>front</b> and <b>rear</b> lights also periodically turn on and off.</p>" +
-        "<p>The grey circle above shows what either light looks like when they are <b>OFF</b> </p>" +
-        whitespace +
+      stimulus: 
+      "<p> Your task is to help Mr X with determining the efficacy of Sosibotrol in treating Linda syndrome.</p>" +
+        "<p> In a moment you will observe patients attending Mr X's drug trial. Each screen will indicate one occasion in which Mr X either administered Sosibotrol or no treatment, and whether a patient recovered or not from Linda syndrome.</p>" +
+        "<p> Please use these observations to help Mr X determine whether there is any relationship between Sosibotrol and recovery from Linda syndrome. </p>" +
+        "<p> This task should take no more than 10 minutes. </p>" +
         whitespace +
         '<p> Press spacebar to continue </p>',
       choices: [32],
       post_trial_gap: 250,
     };
-
-    var training_instructions_task_delay = {
-      type: "html-keyboard-response",
-      stimulus:
-        "<p> In a moment you will observe the machine with Mr X. Each screen will indicate one occasion in which a light was either on or off and the shock either occurred or not. Unfortunately, Mr. X cannot see both lights at the same time, and so will observe either the <b>front</b> or <b>rear</b> light for the duration of the <b>whole</b> experiment.</p>" +
-        "<p> Please use these observations to help Mr X determine whether there is any relationship between the lights and shock.</p>" +
-        "<p> There will be 4 blocks of observations, with questions in between blocks and at the end of the task. This task should take no more than 10 minutes. </p>" +
-        whitespace,
-      response_ends_trial: false,
-      trial_duration: 15000
-    }
-
-    var training_instructions_task_prompt = {
-      type: "html-keyboard-response",
-      stimulus:
-        "<p> In a moment you will observe the machine with Mr X. Each screen will indicate one occasion in which a light was either on or off and the shock either occurred or not. Unfortunately, Mr. X cannot see both lights at the same time, and so will observe either the <b>front</b> or <b>rear</b> light for the duration of the <b>whole</b> experiment.</p>" +
-        "<p> Please use these observations to help Mr X determine whether there is any relationship between the lights and shock.</p>" +
-        "<p> There will be 4 blocks of observations, with questions in between blocks and at the end of the task. This task should take no more than 10 minutes. </p>" +
-        '<p> Press spacebar to continue </p>',
-      choices: [32],
-      post_trial_gap: 250,
-    }
-
-  // } else if (group == 3) {
-  //   var training_instructions_stimon_delay = {
-  //     type: "html-keyboard-response",
-  //     stimulus: '<img src = ' + stim_cue + '/><img src = ' + stim_context + '/>' +
-  //       "<p> In this experiment, Mr X discovers a strange machine that delivers electric shocks.</p>" +
-  //       "<p> Mr X also notices coloured lights on the machine's interface.</p>" +
-  //       "<p> The coloured circles above indicate the lights are currently <b>ON</b>.</p>" +
-  //       whitespace +
-  //       whitespace,
-  //     response_ends_trial: false,
-  //     trial_duration: 5000
-  //   };
-
-  //   var training_instructions_stimon_prompt = {
-  //     type: "html-keyboard-response",
-  //     stimulus: '<img src = ' + stim_cue + '/><img src = ' + stim_context + '/>' +
-  //       "<p> In this experiment, Mr X discovers a strange machine that delivers electric shocks.</p>" +
-  //       "<p> Mr X also notices coloured lights on the machine's interface.</p>" +
-  //       "<p> The coloured circles above indicate the lights are currently <b>ON</b>.</p>" +
-  //       whitespace +
-  //       '<p> Press spacebar to continue </p>',
-  //     choices: [32],
-  //     post_trial_gap: 250,
-  //   };
-
-  //   var training_instructions_stimoff_delay = {
-  //     type: "html-keyboard-response",
-  //     stimulus: '<img src = ' + stim_off + '/><img src = ' + stim_off + '/>' +
-  //       "<p> Both lights also periodically turn on and off. The grey circles above show what either light looks like when they are <b>OFF</b> </p>" +
-  //       "<p> In a moment you will observe the machine with Mr X. Each screen will indicate one occasion in which the lights were either on or off and the shock either occurred or not.</p>" +
-  //       "<p> Please use these observations to help Mr X determine whether there is any relationship between the lights and shock.</p>" +
-  //       "<p> This task should take no more than 5 minutes </p>" +
-  //       whitespace +
-  //       whitespace,
-  //     response_ends_trial: false,
-  //     trial_duration: 10000,
-  //   };
-
-  //   var training_instructions_stimoff_prompt = {
-  //     type: "html-keyboard-response",
-  //     stimulus: '<img src = ' + stim_off + '/><img src = ' + stim_off + '/>' +
-  //       "<p> Both lights also periodically turn on and off. The grey circles above show what either light looks like when they are <b>OFF</b> </p>" +
-  //       "<p> In a moment you will observe the machine with Mr X. Each screen will indicate one occasion in which the lights were either on or off and the shock either occurred or not.</p>" +
-  //       "<p> Please use these observations to help Mr X determine whether there is any relationship between the lights and shock. </p>" +
-  //       "<p> This task should take no more than 5 minutes </p>" +
-  //       whitespace +
-  //       '<p> Press spacebar to continue </p>',
-  //     choices: [32],
-  //     post_trial_gap: 250,
-  //   };
   };
 
   // training instructions block
@@ -1513,13 +1222,13 @@ if (group == 2) {
           jsPsych.data.addProperties({
             id: jatos.workerId,
             failedfirstcheck: failedfirstcheck,
-            failedmcheck: failedmcheck,
             age: age,
             gender: gender,
             group: group,
+            groupname: groupname,
             cb: cb,
-            cue_colour: cue_colour,
-            con_colour: con_colour,
+            // cue_colour: cue_colour,
+            // con_colour: con_colour,
             sona_id: sona_id, // turkcode: turkcode,
           });
           var result = jsPsych.data.get().csv();
