@@ -46,34 +46,39 @@ preload_images = [
 
 // turn images into html strings to shove into trials
  var blank = '<img src = resources/images/BLANK.png height = 250 width = 250> </img>'
+ var whitespace = '<p><font color = white> text </font></p>' //white space line for formatting
 
   // set up counterbalancing for red/blue as target cue and set up html strings
   // Assign conditions: 
 
   // 1 = light
   // 2 = medicine
-  // if (num_random == 1) {
-  //   group = 1
-  //   groupname = 'light'
-  //   var cb = 1;
-  //   var stim_cue = '<img src = resources/images/BLUE.png height = 200 width = 200> </img>';
-  //   var stim_off = '<img src = resources/images/GREY.png height = 200 width = 200> </img>';
-  //   var outcome_display = '<img src = resources/images/shock.png height = 250 width = 250> </img>';
-  //   var outcome_text = "<p> Mr X was shocked!</p>";
-  //   var nooutcome_text = '<p> Mr X was not shocked </p>';
-  //   // var cue_colour = 'blue';
-  // } else if (num_random == 2) {
+  if (num_random == 1) {
+    group = 1
+    groupname = 'light'
+    var cb = 1;
+    var stim_cue = '<img src = resources/images/BLUE.png height = 200 width = 200> </img>';
+    var stim_cue_text = whitespace;
+    var stim_off = '<img src = resources/images/GREY.png height = 200 width = 200> </img>';
+    var stim_off_text = whitespace;
+    var outcome_display = '<img src = resources/images/shock.png height = 250 width = 250> </img>';
+    var outcome_text = "<p> Mr X was shocked!</p>";
+    var nooutcome_text = '<p> Mr X was not shocked </p>';
+    // var cue_colour = 'blue';
+  } else if (num_random == 2) {
   group = 2
   groupname = 'medicine'
     var cb = 2
     var stim_cue = '<img src = resources/images/pill.png height = 200 width = 200> </img>';
-    var stim_off = '<p> Mr X administered no treatment </p>'
+    var stim_cue_text = '<p> Dr X administered Sosibotrol. </p>'
+    var stim_off = blank ;
+    var stim_off_text = '<p> Dr X administered no treatment. </p>';
     var outcome_display = '<img src = resources/images/healthy.png height = 250 width = 250> </img>';
-    var outcome_text = "<p> The patient's condition got better!. </p>";
-    var nooutcome_text ="<p> The patient's condition did not change. </p>";
-  // };
+    var outcome_text = "<p> The patient recovered! </p>";
+    var nooutcome_text ="<p> The patient did not recover. </p>";
+  };
 
-  console.log('group ' + group);
+  // console.log('group ' + group);
 
   var demographics_age = {
     type: "survey-html-form",
@@ -118,13 +123,12 @@ preload_images = [
 
   // Set up A B C D trials
   // group 2 sees a medicine followed by healthy or no recovery, )
-  var whitespace = '<p><font color = "white"> Press the spacebar to continue </font></p>' //white space line for formatting
 
   // 1 cue trials
   var cueon_display = {
     type: "html-keyboard-response",
     stimulus: stim_cue +
-      '<p></p>' +
+      stim_cue_text +
       blank +
       whitespace +
       whitespace,
@@ -134,9 +138,9 @@ preload_images = [
 
   var cueoff_display = {
     type: "html-keyboard-response",
-    stimulus: stim_off+
-      '<p></p>' +
-      blank +
+    stimulus: stim_off +
+    stim_off_text +
+    blank +
       whitespace +
       whitespace,
     response_ends_trial: false,
@@ -146,10 +150,10 @@ preload_images = [
   var outcome_cueon_delay = {
     type: "html-keyboard-response",
     stimulus: stim_cue +
-      '<p></p>' +
-      outcome_display +
-      outcome_text +
-      whitespace,
+    stim_cue_text +
+    outcome_display +
+    outcome_text +
+    whitespace,
     response_ends_trial: false,
     trial_duration: 1250,
   };
@@ -157,10 +161,10 @@ preload_images = [
   var outcome_cueon_prompt = {
     type: "html-keyboard-response",
     stimulus: stim_cue +
-      '<p></p>' +
-      outcome_display +
-      outcome_text +
-      "<p> Press the spacebar to continue </p>",
+    stim_cue_text +
+    outcome_display +
+    outcome_text +
+    "<p> Press the spacebar to continue </p>",
     choices: [32],
     post_trial_gap: 300,
     on_finish: function (data) {
@@ -173,10 +177,10 @@ preload_images = [
   var nooutcome_cueon_delay = {
     type: "html-keyboard-response",
     stimulus: stim_cue +
-      '<p></p>' +
-      nooutcome_text +
-      blank +
-      whitespace,
+    stim_cue_text +
+    blank +
+    nooutcome_text +
+    whitespace,
     response_ends_trial: false,
     trial_duration: 1250
   }
@@ -184,10 +188,10 @@ preload_images = [
   var nooutcome_cueon_prompt = {
     type: "html-keyboard-response",
     stimulus: stim_cue +
-      '<p></p>' +
-      nooutcome_text +
-      blank +
-      '<p> Press the spacebar to continue </p>',
+    stim_cue_text +
+    blank +
+    nooutcome_text +
+    '<p> Press the spacebar to continue </p>',
     choices: [32],
     post_trial_gap: 300,
     on_finish: function (data) {
@@ -200,7 +204,7 @@ preload_images = [
   var outcome_cueoff_delay = {
     type: "html-keyboard-response",
     stimulus: stim_off +
-      '<p></p>' +
+    stim_off_text +
       outcome_display +
       outcome_text +
       whitespace,
@@ -211,7 +215,7 @@ preload_images = [
   var outcome_cueoff_prompt = {
     type: "html-keyboard-response",
     stimulus: stim_off +
-      '<p></p>' +
+    stim_off_text +
       outcome_display +
       outcome_text +
       "<p> Press the spacebar to continue </p>",
@@ -227,10 +231,10 @@ preload_images = [
   var nooutcome_cueoff_delay = {
     type: "html-keyboard-response",
     stimulus: stim_off +
-      '<p></p>' +
-      nooutcome_text +
-      blank +
-      whitespace,
+    stim_off_text +
+    blank +
+    nooutcome_text +
+    whitespace,
     response_ends_trial: false,
     trial_duration: 1250
   }
@@ -238,10 +242,10 @@ preload_images = [
   var nooutcome_cueoff_prompt = {
     type: "html-keyboard-response",
     stimulus: stim_off +
-      '<p></p>' +
-      nooutcome_text +
-      blank +
-      '<p> Press the spacebar to continue </p>',
+    stim_off_text +
+    blank +
+    nooutcome_text +
+    '<p> Press the spacebar to continue </p>',
     choices: [32],
     post_trial_gap: 300,
     on_finish: function (data) {
@@ -410,7 +414,7 @@ preload_images = [
       ],
       button_label: "Continue",
       require_movement: true,
-      prompt: "<p> Imagine Mr X observed the shock machine 100 times and only saw this light.</p>" +
+      prompt: "<p> Imagine Mr X observed the shock machine 100 times and <b>only</b> saw this light.</p>" +
         "<p> How many times out of 100 do you predict Mr X will be shocked? </p>",
       post_trial_gap: 250,
       data: {
@@ -429,7 +433,7 @@ preload_images = [
       ],
       button_label: "Continue",
       require_movement: true,
-      prompt: "<p> Imagine Mr X observed the shock machine 100 times and the light was always off.</p>" +
+      prompt: "<p> Imagine Mr X observed the shock machine 100 times and the light was <b>always off</b>.</p>" +
         "<p> How many times out of 100 do you predict Mr X will be shocked? </p>",
       post_trial_gap: 250,
       data: {
@@ -490,7 +494,7 @@ preload_images = [
     ],
     button_label: "Continue",
     require_movement: true,
-    prompt: "<p> To what extent does administering Sosibotrol to patients with Linda syndrome cause or prevent recovery? </p>",
+    prompt: "<p> To what extent does administering Sosibotrol to patients with Linda Syndrome cause or prevent recovery? </p>",
     post_trial_gap: 250,
     min: -100,
     max: 100,
@@ -505,14 +509,14 @@ preload_images = [
       type: "html-slider-response",
       stimulus: stim_cue,
       labels: [
-        "<p> Shocked 0 times </p>",
-        "<p> Shocked 50 times </p>",
-        "<p> Shocked 100 times <p>"
+        "<p> 0 patients felt better </p>",
+        "<p> 50 patients felt better </p>",
+        "<p> 100 patients felt better <p>"
       ],
       button_label: "Continue",
       require_movement: true,
-      prompt: "<p> Imagine Mr X observed 100 patients who were administered Sosibotrol for Linda syndrome.</p>" +
-        "<p> How many patients out of the 100 do you predict will recover? </p>",
+      prompt: "<p> Imagine Dr X observed 100 new patients who were administered Sosibotrol for Linda Syndrome.</p>" +
+        "<p> How many patients out of the 100 do you predict will feel better? </p>",
       post_trial_gap: 250,
       data: {
         trialtype: "fr_cue",
@@ -524,14 +528,14 @@ preload_images = [
       type: "html-slider-response",
       stimulus: stim_off,
       labels: [
-        "<p> Shocked 0 times </p>",
-        "<p> Shocked 50 times </p>",
-        "<p> Shocked 100 times <p>"
+      "<p> 0 patients felt better </p>",
+        "<p> 50 patients felt better </p>",
+        "<p> 100 patients felt better <p>"
       ],
       button_label: "Continue",
       require_movement: true,
-      prompt: "<p> Imagine Mr X observed 100 patients who took no treatment for Linda syndrome.</p>" +
-        "<p> How many patients out of the 100 do you predict will recover? </p>",
+      prompt: "<p> Imagine Dr X observed 100 new patients who took <b>no treatment</b> for Linda Syndrome.</p>" +
+      "<p> How many patients out of the 100 do you predict will feel better? </p>",
       post_trial_gap: 250,
       data: {
         trialtype: "fr_off",
@@ -541,7 +545,7 @@ preload_images = [
     var test_openend_causalrelationship = {
     type: "survey-text",
     questions: [
-      { prompt: "In a few sentences, how did you determine whether there was a causal relationship or not between taking Sosibotrol and recovering from Linda syndrome?", rows: 10, columns: 80 },
+      { prompt: "In a few sentences, how did you determine whether there was a causal relationship or not between taking Sosibotrol and recovering from Linda Syndrome?", rows: 10, columns: 80 },
     ],
     post_trial_gap: 250,
     data: {
@@ -554,7 +558,7 @@ preload_images = [
     type: "survey-text",
     questions: [
       {
-        prompt: "<p>In this experiment, did you consider any causes of recovery from Linda syndrome other than Sosibotrol? If so, please describe them. </p>" +
+        prompt: "<p>In this experiment, did you consider any causes of recovery from Linda Syndrome other than Sosibotrol? If so, please describe them. </p>" +
           "<p>If you did not consider any other causes of recovery, please type 'no' and click 'Continue'.</p>", rows: 10, columns: 80
       },
     ],
@@ -569,7 +573,7 @@ preload_images = [
       type: "survey-text",
       questions: [
         {
-          prompt: "<p> On some trials, Mr X observed that patients did not take Sosibotrol but still recovered from Linda syndrome.</p>" +
+          prompt: "<p> On some trials, Dr X observed that patients did not take Sosibotrol but still recovered from Linda Syndrome.</p>" +
             "<p>What did you think caused recovery?.</p>", rows: 10, columns: 80
         },
       ],
@@ -813,8 +817,8 @@ var timeline_test_trials_final = {
     var training_instructions_stimon_delay = {
       type: "html-keyboard-response",
       stimulus: stim_cue +
-      "<p> In this experiment, Mr X is investigating a new experimental drug called Sosibotrol.</p>" +
-      "<p> Sosibotrol has been developed to treat a novel disease called Linda syndrome.</p>" +
+      "<p> In this experiment, Dr X is investigating a novel disease called Linda Syndrome.</p>" +
+      "<p> Dr X is interested in whether a new experimental drug called Sosibotrol is effective in curing Linda Syndrome</p>" +
       whitespace,
       response_ends_trial: false,
       trial_duration: 5000
@@ -823,8 +827,8 @@ var timeline_test_trials_final = {
     var training_instructions_stimon_prompt = {
       type: "html-keyboard-response",
       stimulus: stim_cue +
-      "<p> In this experiment, Mr X is investigating a new experimental drug called Sosibotrol.</p>" +
-      "<p> Sosibotrol has been developed to treat a novel disease called Linda syndrome.</p>" +
+      "<p> In this experiment, Dr X is investigating a novel disease called Linda Syndrome.</p>" +
+      "<p> Dr X is interested in whether a new experimental drug called Sosibotrol is effective in curing Linda Syndrome</p>" +
       '<p> Press spacebar to continue </p>',
       choices: [32],
       post_trial_gap: 250,
@@ -833,9 +837,9 @@ var timeline_test_trials_final = {
     var training_instructions_stimoff_delay = {
       type: "html-keyboard-response",
       stimulus: 
-        "<p> Your task is to help Mr X with determining the efficacy of Sosibotrol in treating Linda syndrome.</p>" +
-        "<p> In a moment you will observe patients attending Mr X's drug trial. Each screen will indicate one occasion in which Mr X either administered Sosibotrol or no treatment, and whether a patient recovered or not from Linda syndrome.</p>" +
-        "<p> Please use these observations to help Mr X determine whether there is any relationship between Sosibotrol and recovery from Linda syndrome. </p>" +
+        "<p> Your task is to help Dr X review his patient records to determine the efficacy of Sosibotrol in treating Linda Syndrome.</p>" +
+        "<p> In a moment you will observe each patient from Dr X's records. Each screen will indicate one occasion in which Dr X administered either Sosibotrol or no treatment to a patient, and whether the patient recovered or not from Linda Syndrome.</p>" +
+        "<p> Please use these observations to help Dr X determine whether there is any relationship between Sosibotrol and recovery from Linda Syndrome. </p>" +
         "<p> This task should take no more than 10 minutes. </p>" +
         whitespace +
         whitespace,
@@ -846,9 +850,9 @@ var timeline_test_trials_final = {
     var training_instructions_stimoff_prompt = {
       type: "html-keyboard-response",
       stimulus: 
-      "<p> Your task is to help Mr X with determining the efficacy of Sosibotrol in treating Linda syndrome.</p>" +
-        "<p> In a moment you will observe patients attending Mr X's drug trial. Each screen will indicate one occasion in which Mr X either administered Sosibotrol or no treatment, and whether a patient recovered or not from Linda syndrome.</p>" +
-        "<p> Please use these observations to help Mr X determine whether there is any relationship between Sosibotrol and recovery from Linda syndrome. </p>" +
+        "<p> Your task is to help Dr X review his patient records to determine the efficacy of Sosibotrol in treating Linda Syndrome.</p>" +
+        "<p> In a moment you will observe each patient from Dr X's records. Each screen will indicate one occasion in which Dr X administered either Sosibotrol or no treatment to a patient, and whether the patient recovered or not from Linda Syndrome.</p>" +
+        "<p> Please use these observations to help Dr X determine whether there is any relationship between Sosibotrol and recovery from Linda Syndrome. </p>" +
         "<p> This task should take no more than 10 minutes. </p>" +
         whitespace +
         '<p> Press spacebar to continue </p>',
@@ -863,12 +867,8 @@ var timeline_test_trials_final = {
       timeline: [
         training_instructions_stimon_delay,
         training_instructions_stimon_prompt,
-        training_instructions_stimrear_delay,
-        training_instructions_stimrear_prompt,
         training_instructions_stimoff_delay,
         training_instructions_stimoff_prompt,
-        training_instructions_task_delay,
-        training_instructions_task_prompt,
       ],
     };
   } else {
@@ -883,19 +883,31 @@ var timeline_test_trials_final = {
   };
 
   //instruction check
-  var Q0_text = "What is the aim of the task?";
-  var Q0_answers = [
+  var Q0_text = "What is the aim of your task?";
+
+  if (group == 1) {
+    var Q0_answers = [
     "To shock Mr X with the machine as much as possible",
     "To prevent Mr X from getting shocked by the machine",
     "To determine whether or not the machine's lights are related to electric shocks"
   ];
   var Q1_text = "What does a plain grey circle represent on the machine?";
-  var Q1_answers = [
+    var Q1_answers = [
     "The light is on",
     "The light is broken",
     "The light is off",
   ];
+  
   var correctstring = '{"Q0":"' + Q0_answers[2] + '","Q1":"' + Q1_answers[2] + '"}';
+
+  } else if (group == 2){
+    var Q0_answers = [
+    "To infect patients with Linda Syndrome",
+    "To prevent patients from contracting Linda Syndrome",
+    "To determine whether or not Sosibotrol is effective in treating Linda Syndrome"
+  ];
+  var correctstring = '{"Q0":"' + Q0_answers[2] + '"}';
+  };
 
   //instruction check loop
   var instruction_check_block = [];
@@ -903,9 +915,10 @@ var timeline_test_trials_final = {
   var instructioncorrect = false;
   failedfirstcheck = false;
 
+if (group == 1) {
   var instruction_check = {
     type: "survey-multi-choice",
-    preamble: "<p> Please answer the following questions to confirm you understand the task instructions. </p>" +
+    preamble: "<p> Please answer the following question(s) to confirm you understand the task instructions. </p>" +
       "<p><b> Please note, if you make a mistake, you will be asked to answer these questions again. </b> </p>",
     questions: [
       { prompt: Q0_text, options: Q0_answers, name: "Q0", required: true },
@@ -918,6 +931,22 @@ var timeline_test_trials_final = {
       }
     }    
   };
+} else if (group == 2) {
+  var instruction_check = {
+    type: "survey-multi-choice",
+    preamble: "<p> Please answer the following question(s) to confirm you understand the task instructions. </p>" +
+      "<p><b> Please note, if you make a mistake, you will be asked to answer these questions again. </b> </p>",
+    questions: [
+      { prompt: Q0_text, options: Q0_answers, name: "Q0", required: true },
+    ],
+    post_trial_gap: 250,
+    on_finish: function (data) {
+      if (data.responses == correctstring) {
+        instructioncorrect = true;
+      }
+    }    
+  };
+}
 
   instruction_check_block = instruction_check_block.concat(instruction_check);
 
@@ -952,10 +981,15 @@ var timeline_test_trials_final = {
   };
 
   // TEST instructions
+  if (group == 1) {
+    test_text = "the shock machine";
+  } else if (group == 2){
+    test_text = "Sosibotrol"
+  }
   var test_instructions_pretest_delay = {
     type: "html-keyboard-response",
     stimulus:
-    "<p> Before we begin, we would like to ask you for your initial thoughts about the shock machine. </p>" +
+    "<p> Before we begin, we would like to ask you for your initial thoughts about " +  test_text + ".</p>" +
     "<p> Please answer by adjusting the slider on the scale provided. </p>" +
     whitespace,
     response_ends_trial: false,
@@ -965,7 +999,7 @@ var timeline_test_trials_final = {
   var test_instructions_pretest_prompt = {
     type: "html-keyboard-response",
     stimulus:
-      "<p> Before we begin, we would like to ask you for your initial thoughts about the shock machine. </p>" +
+    "<p> Before we begin, we would like to ask you for your initial thoughts about " +  test_text + ".</p>" +
       "<p> Please answer by adjusting the slider on the scale provided. </p>" +
       "<p> Press spacebar to continue </p>",
       post_trial_gap: 500
@@ -975,7 +1009,7 @@ var timeline_test_trials_final = {
     type: "html-keyboard-response",
     stimulus: 
     "<p> This concludes the first block of the task.</p>" +
-    "<p> Before we continue, we will ask about what you've learnt about the shock machine so far</p>" +
+    "<p> Before we continue, we will ask about what you've learnt about " + test_text + " so far.</p>" +
       whitespace,
     response_ends_trial: false,
     trial_duration: 4000,
@@ -986,7 +1020,7 @@ var timeline_test_trials_final = {
     choices: [32],
     stimulus: 
     "<p> This concludes the first block of the task.</p>" +
-      "<p> Before we continue, we will ask about what you've learnt about the shock machine so far</p>" +
+    "<p> Before we continue, we will ask about what you've learnt about " + test_text + " so far.</p>" +
       "<p> Press spacebar to continue </p>",
       post_trial_gap: 500
   };
@@ -995,7 +1029,7 @@ var timeline_test_trials_final = {
     type: "html-keyboard-response",
     stimulus: 
     "<p> This concludes the second block of the task.</p>" +
-    "<p> Before we continue, we will ask about what you've learnt about the shock machine so far</p>" +
+    "<p> Before we continue, we will ask about what you've learnt about " + test_text + " so far.</p>" +
       whitespace,
     response_ends_trial: false,
     trial_duration: 4000,
@@ -1006,7 +1040,7 @@ var timeline_test_trials_final = {
     choices: [32],
     stimulus: 
     "<p> This concludes the second block of the task.</p>" +
-    "<p> Before we continue, we will ask about what you've learnt about the shock machine so far</p>" +
+    "<p> Before we continue, we will ask about what you've learnt about " + test_text + " so far.</p>" +
       "<p> Press spacebar to continue </p>",
       post_trial_gap: 500
   };
@@ -1015,7 +1049,7 @@ var timeline_test_trials_final = {
     type: "html-keyboard-response",
     stimulus: 
     "<p> This concludes the third block of the task.</p>" +
-    "<p> Before we continue, we will ask about what you've learnt about the shock machine so far</p>" +
+    "<p> Before we continue, we will ask about what you've learnt about " + test_text + " so far.</p>" +
       whitespace,
     response_ends_trial: false,
     trial_duration: 4000,
@@ -1026,7 +1060,7 @@ var timeline_test_trials_final = {
     choices: [32],
     stimulus: 
     "<p> This concludes the third block of the task.</p>" +
-    "<p> Before we continue, we will ask about what you've learnt about the shock machine so far</p>" +
+    "<p> Before we continue, we will ask about what you've learnt about " + test_text + " so far.</p>" +
       "<p> Press spacebar to continue </p>",
       post_trial_gap: 500
   };
@@ -1034,7 +1068,7 @@ var timeline_test_trials_final = {
   var test_instructions_post_delay = {
     type: "html-keyboard-response",
     stimulus: "<p> Thank you, this concludes the final block of the task. </p>" +
-      "<p> We will now ask you some final questions regarding what you've learnt about the shock machine so far. </p>" +
+      "<p> We will now ask you some final questions regarding what you've learnt about " + test_text + " so far.</p>" +
       whitespace,
     response_ends_trial: false,
     trial_duration: 4000,
@@ -1044,7 +1078,7 @@ var timeline_test_trials_final = {
     type: "html-keyboard-response",
     choices: [32],
     stimulus: "<p> Thank you, this concludes the final block of the task. </p>" +
-      "<p> We will now ask you some final questions regarding what you've learnt about the shock machine so far. </p>" + 
+      "<p> We will now ask you some final questions regarding what you've learnt about " + test_text + " so far.</p>" +
       "<p> Press spacebar to continue </p>",
       post_trial_gap: 500
   };
