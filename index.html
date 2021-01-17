@@ -48,37 +48,30 @@ preload_images = [
  var blank = '<img src = resources/images/BLANK.png height = 250 width = 250> </img>'
 
   // set up counterbalancing for red/blue as target cue and set up html strings
-  if (num_random == 1) {
-    var cb = 1;
-    var stim_cue = '<img src = resources/images/BLUE.png height = 200 width = 200> </img>';
-    var stim_off = '<img src = resources/images/GREY.png height = 200 width = 200> </img>';
-    var outcome_display = '<img src = resources/images/shock.png height = 250 width = 250> </img>';
-    var outcome_text = "<p> Mr X was shocked!</p>";
-    var nooutcome_text = '<p> Mr X was not shocked </p>';
-    // var cue_colour = 'blue';
-  } else if (num_random == 2) {
+  // Assign conditions: 
+
+  // 1 = light
+  // 2 = medicine
+  // if (num_random == 1) {
+  //   group = 1
+  //   groupname = 'light'
+  //   var cb = 1;
+  //   var stim_cue = '<img src = resources/images/BLUE.png height = 200 width = 200> </img>';
+  //   var stim_off = '<img src = resources/images/GREY.png height = 200 width = 200> </img>';
+  //   var outcome_display = '<img src = resources/images/shock.png height = 250 width = 250> </img>';
+  //   var outcome_text = "<p> Mr X was shocked!</p>";
+  //   var nooutcome_text = '<p> Mr X was not shocked </p>';
+  //   // var cue_colour = 'blue';
+  // } else if (num_random == 2) {
+  group = 2
+  groupname = 'medicine'
     var cb = 2
     var stim_cue = '<img src = resources/images/pill.png height = 200 width = 200> </img>';
-    var stim_off = 'Mr X did not take the medicine'
-    var outcome_display = '<img src = resources/images/healthy.png height = 250 width = 250> </img>' +
-    + '<p> Mr X administered Sosibotrol.</p>';
-    var outcome_text = "<p> The patient felt better! </p>";
-    var nooutcome_text ='<p> The patient did not feel better </p>';
-  };
-
-// Assign conditions: 
-
-  1 = light
-  2 = medicine
-
-  if (num_random == 1) {
-    group = 1
-    groupname = 'light'
-  } else if (num_random == 2) {
-    group = 2
-    groupname = 'medicine'
-    // stim_context = stim_broken
-  };
+    var stim_off = '<p> Mr X administered no treatment </p>'
+    var outcome_display = '<img src = resources/images/healthy.png height = 250 width = 250> </img>';
+    var outcome_text = "<p> The patient's condition got better!. </p>";
+    var nooutcome_text ="<p> The patient's condition did not change. </p>";
+  // };
 
   console.log('group ' + group);
 
